@@ -36,7 +36,7 @@ def init_quad():
 
     # Set up vertex attribute pointers
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), None)
-    glEnableVertexAttribArray(0)
+    # glEnableVertexAttribArray(0)
 
     # Unbind the VAO and VBO
     glBindBuffer(GL_ARRAY_BUFFER, 0)
