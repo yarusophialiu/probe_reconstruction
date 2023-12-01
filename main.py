@@ -7,8 +7,11 @@ from OpenGL.GLUT import *
 from PIL import Image
 # import glfw
 
+# quadVAO = 0  # Vertex Array Object ID
+# quadVBO = 0  # Vertex Buffer Object ID
+
 def init_quad():
-    global quadVBO
+    global quadVAO, quadVBO
 
     # Define the vertices of a quad
     vertices = np.array([
@@ -18,6 +21,9 @@ def init_quad():
         -1, -1, 0.0   # Bottom-left vertex
     ], dtype=np.float32)
 
+    quadVAO = glGenVertexArrays(1)  
+    glBindVertexArray(quadVAO)
+
     # Generate and bind a VBO
     quadVBO = glGenBuffers(1)
     glBindBuffer(GL_ARRAY_BUFFER, quadVBO)
@@ -25,15 +31,26 @@ def init_quad():
     # Fill the buffer with vertex data
     glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
 
-    # Unbind the buffer
+    # # Unbind the buffer
+    # glBindBuffer(GL_ARRAY_BUFFER, 0)
+
+    # Set up vertex attribute pointers
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), None)
+    glEnableVertexAttribArray(0)
+
+    # Unbind the VAO and VBO
     glBindBuffer(GL_ARRAY_BUFFER, 0)
+    glBindVertexArray(0)
 
 
 def render_quad():
     global quadVBO
+    global quadVAO
+    
 
     # Bind the VBO
     glBindBuffer(GL_ARRAY_BUFFER, quadVBO)
+    glBindVertexArray(quadVAO)
 
     # Enable and specify the vertex attribute pointers
     glEnableClientState(GL_VERTEX_ARRAY)
@@ -43,8 +60,9 @@ def render_quad():
     glDrawArrays(GL_QUADS, 0, 4)
 
     # Cleanup
-    glDisableClientState(GL_VERTEX_ARRAY)
+    # glDisableClientState(GL_VERTEX_ARRAY)
     glBindBuffer(GL_ARRAY_BUFFER, 0)
+    glBindVertexArray(0)
 
 
 
