@@ -5,6 +5,47 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from PIL import Image
+# import glfw
+
+def init_quad():
+    global quadVBO
+
+    # Define the vertices of a quad
+    vertices = np.array([
+        -1,  1, 0.0,  # Top-left vertex
+         1,  1, 0.0,  # Top-right vertex
+         1, -1, 0.0,  # Bottom-right vertex
+        -1, -1, 0.0   # Bottom-left vertex
+    ], dtype=np.float32)
+
+    # Generate and bind a VBO
+    quadVBO = glGenBuffers(1)
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO)
+
+    # Fill the buffer with vertex data
+    glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
+
+    # Unbind the buffer
+    glBindBuffer(GL_ARRAY_BUFFER, 0)
+
+
+def render_quad():
+    global quadVBO
+
+    # Bind the VBO
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO)
+
+    # Enable and specify the vertex attribute pointers
+    glEnableClientState(GL_VERTEX_ARRAY)
+    glVertexPointer(3, GL_FLOAT, 0, None)
+
+    # Draw the quad
+    glDrawArrays(GL_QUADS, 0, 4)
+
+    # Cleanup
+    glDisableClientState(GL_VERTEX_ARRAY)
+    glBindBuffer(GL_ARRAY_BUFFER, 0)
+
 
 
 def read_shader_file(filename):
@@ -196,6 +237,8 @@ glUniform2fv(dXY, 1, np.array([dx, dy]))
 ab = glGetUniformLocation(shader_program, "ab")
 glUniform2fv(ab, 1, np.array([a, b]))
 
+
+init_quad()
 # Main loop
 while True:
     for event in pygame.event.get():
@@ -206,12 +249,29 @@ while True:
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     
     # Draw quad with texture
-    glBegin(GL_QUADS)
-    glTexCoord2f(0, 0); glVertex2f(-1, -1)
-    glTexCoord2f(1, 0); glVertex2f(1, -1)
-    glTexCoord2f(1, 1); glVertex2f(1, 1)
-    glTexCoord2f(0, 1); glVertex2f(-1, 1)
-    glEnd()
+    # glBegin(GL_QUADS)
+
+    global quadVBO
+
+    # Initialize GLFW and create a window...
+
+    # Initialize GLEW...
+
+    # Initialize the quad
+
+
+    # Clear the screen...
+
+    # Render the quad
+    render_quad()
+    # Cleanup code...
+
+
+    # glTexCoord2f(0, 0); glVertex2f(-1, -1)
+    # glTexCoord2f(1, 0); glVertex2f(1, -1)
+    # glTexCoord2f(1, 1); glVertex2f(1, 1)
+    # glTexCoord2f(0, 1); glVertex2f(-1, 1)
+    # glEnd()
 
     pygame.display.flip()
     pygame.time.wait(10)
