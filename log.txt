@@ -1,0 +1,47 @@
+load probe time: 0.27768778800964355  s
+
+
+========================= trace 0 =============================
+enter trace one probe
+Eye and probe aligns 
+
+rendering time: 7.200340986251831  s
+
+
+float signNotZero(float f){
+  return(f >= 0.0) ? 1.0 : -1.0;
+}
+
+vec2 signNotZero(vec2 v) {
+  return vec2(signNotZero(v.x), signNotZero(v.y));
+}
+
+
+vec2 octEncode(in vec3 v) {
+    float l1norm = abs(v.x) + abs(v.y) + abs(v.z);
+    vec2 result = v.xy * (1.0 / l1norm);
+    if (v.z < 0.0) {
+        result = (1.0 - abs(result.yx)) * signNotZero(result.xy);
+    }
+    return result;
+}
+
+
+
+
+ // ndc to view space
+    vec2 ndc = (2.0 * gl_FragCoord.xy - iResolution) / min(iResolution.y, iResolution.x);
+    vec3 rayDirView = vec3(ndc, -1.0); 
+
+    float fov = radians(170.0);
+    float aspectRatio = iResolution.x / iResolution.y;
+
+    vec3 cameraRight = vec3(1.0, 0.0, 0.0);
+    vec3 cameraUp = vec3(0.0, 1.0, 0.0);
+
+    // viewspace to worldspace
+    // vec3 rayDirWorld = normalize(rayDirView.x * cameraRight + rayDirView.y * cameraUp + rayDirView.z * normalize(lookAt - cameraPosition));
+
+
+
+
