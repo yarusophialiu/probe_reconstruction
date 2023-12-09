@@ -142,19 +142,12 @@ void main() {
     Point2  hitProbeTexCoord;
     int     probeIndex;
 
-    if (!traceProject(L1, ray, hitDistance, hitProbeTexCoord, probeIndex)) {
-        // Missed the entire scene; assign black
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    } else {
-        // Sample the light probe radiance texture
-        // gl_FragColor = textureLod(L1.radianceProbeGrid, vec3(hitProbeTexCoord.x, hitProbeTexCoord.y, probeIndex), 0);
-        gl_FragColor = textureLod(L1.radianceProbeGrid, vec3(hitProbeTexCoord.x, 1.0 - hitProbeTexCoord.y, probeIndex), 0);
-    }
-
+    
+    
     // Example: Sample the radianceProbeGrid texture
     // vec3(uv, 0.0): layer 0.0
-    // vec4 radianceColor = texture(L1.radianceProbeGrid, vec3(gl_FragCoord.x / iResolution[0], 1.0 - (gl_FragCoord.y / iResolution[1]), 0.0));
-    // fragColor = radianceColor;
+    vec4 radianceColor = texture(L1.radianceProbeGrid, vec3(gl_FragCoord.x / iResolution[0], 1.0 - (gl_FragCoord.y / iResolution[1]), 0.0));
+    fragColor = radianceColor;
 
 
     // Example: Sample the radianceProbeGrid texture

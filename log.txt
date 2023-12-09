@@ -44,4 +44,12 @@ vec2 octEncode(in vec3 v) {
 
 
 
+if (!traceProject(L1, ray, hitDistance, hitProbeTexCoord, probeIndex)) {
+        // Missed the entire scene; assign black
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    } else {
+        // Sample the light probe radiance texture
+        // gl_FragColor = textureLod(L1.radianceProbeGrid, vec3(hitProbeTexCoord.x, hitProbeTexCoord.y, probeIndex), 0);
+        gl_FragColor = textureLod(L1.radianceProbeGrid, vec3(hitProbeTexCoord.x, 1.0 - hitProbeTexCoord.y, probeIndex), 0);
+    }
 

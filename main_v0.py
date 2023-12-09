@@ -4,22 +4,11 @@ import numpy as np
 from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLUT import *
-from OpenGL.WGL import *
 from PIL import Image
-# Import additional constants from OpenGL.WGL.ARB.create_context
-from OpenGL.WGL.ARB.create_context import WGL_CONTEXT_MAJOR_VERSION_ARB, \
-    WGL_CONTEXT_MINOR_VERSION_ARB, \
-    wglCreateContextAttribsARB
+# import glfw
 
-from OpenGL.WGL.ARB.create_context_profile import WGL_CONTEXT_PROFILE_MASK_ARB
-
-# Define your desired OpenGL context attributes
-context_attributes = [
-    WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
-    WGL_CONTEXT_MINOR_VERSION_ARB, 3,
-    WGL_CONTEXT_PROFILE_MASK_ARB, 0x00000001,  # WGL_CONTEXT_CORE_PROFILE_BIT_ARB
-    0  # Null-terminated array
-]
+# quadVAO = 0  # Vertex Array Object ID
+# quadVBO = 0  # Vertex Buffer Object ID
 
 def init_quad():
     global quadVAO, quadVBO
@@ -55,69 +44,27 @@ def init_quad():
 
 
 def render_quad():
+    # global quadVBO
     global quadVAO
+    
+
+    # Bind the VBO
+    # glBindBuffer(GL_ARRAY_BUFFER, quadVBO)
     glBindVertexArray(quadVAO)
+
+    # # Enable and specify the vertex attribute pointers
+    # glEnableClientState(GL_VERTEX_ARRAY)
+    # glVertexPointer(3, GL_FLOAT, 0, None)
+
     # Draw the quad
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4)
+    glDrawArrays(GL_QUADS, 0, 4)
+
+    # Cleanup
+    # glDisableClientState(GL_VERTEX_ARRAY)
+    # glBindBuffer(GL_ARRAY_BUFFER, 0)
     glBindVertexArray(0)
 
 
-# Direct numerical values for PIXELFORMATDESCRIPTOR flags
-PFD_DRAW_TO_WINDOW = 0x00000004
-PFD_SUPPORT_OPENGL = 0x00000020
-PFD_DOUBLEBUFFER = 0x00000001
-PFD_TYPE_RGBA = 0x00000000
-
-# def create_opengl_context():
-#     # Create a dummy window for context creation
-#     glutInit()
-#     glutCreateWindow("Dummy")
-    
-#     # Get the current device context
-#     hdc = wglGetCurrentDC()
-    
-#     # Choose and set the pixel format
-#     pfd = PIXELFORMATDESCRIPTOR()
-#     pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR)
-#     pfd.nVersion = 1
-#     pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER
-#     pfd.iPixelType = PFD_TYPE_RGBA
-#     pfd.cColorBits = 32
-#     pfd.cDepthBits = 24
-#     pfd.cStencilBits = 8
-    
-#     pf = ChoosePixelFormat(hdc, pfd)
-#     SetPixelFormat(hdc, pf, pfd)
-    
-#     # Create the OpenGL 2.1 context
-#     hrc = wglCreateContext(hdc)
-#     wglMakeCurrent(hdc, hrc)
-    
-#     # Get the function pointer for wglCreateContextAttribsARB
-#     wglCreateContextAttribsARB = wglGetProcAddress('wglCreateContextAttribsARB')
-#     if not wglCreateContextAttribsARB:
-#         raise RuntimeError("wglCreateContextAttribsARB not available")
-    
-#     # Create the desired OpenGL context
-#     hrc = wglCreateContextAttribsARB(hdc, 0, context_attributes)
-#     wglMakeCurrent(hdc, hrc)
-    
-#     return hdc, hrc
-
-def create_opengl_context(display):
-    pygame.init()
-    pygame.display.set_mode((display[0], display[1]), DOUBLEBUF | OPENGL)
-
-    # Get the current device context
-    hdc = wglGetCurrentDC()
-    # Convert the context_attributes list to a ctypes array
-    context_attributes_array = (c_int * len(context_attributes))(*context_attributes)
-
-    # Use the direct function from PyOpenGL
-    hrc = wglCreateContextAttribsARB(hdc, 0, context_attributes_array)
-    wglMakeCurrent(hdc, hrc)
-
-    return hrc
 
 def read_shader_file(filename):
     with open(filename, 'r') as file:
@@ -220,15 +167,13 @@ def load_texture(image_path):
     return texture_id
 
 
-# # Initialize Pygame and OpenGL
-# pygame.init()
-width, height = 512, 512
+# Initialize Pygame and OpenGL
+pygame.init()
+width, height = 1024, 1024
 # width, height = 2048, 2048
 display = (width, height)
 
-# pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
-hrc = create_opengl_context(display)
-
+pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
 # Load shader source code from files
 vertex_shader_source = read_shader_file('vertex_shader.glsl')
@@ -312,7 +257,7 @@ glUniform2fv(ab, 1, np.array([a, b]))
 
 
 init_quad()
-# # Main loop
+# Main loop
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -321,28 +266,30 @@ while True:
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     
-#     # Draw quad with texture
-#     # glBegin(GL_QUADS)
+    # Draw quad with texture
+    # glBegin(GL_QUADS)
 
-#     global quadVBO
+    global quadVBO
 
+    # Initialize GLFW and create a window...
+
+    # Initialize GLEW...
+
+    # Initialize the quad
+
+
+    # Clear the screen...
+
+    # Render the quad
     render_quad()
-#     # Cleanup code..
+    # Cleanup code...
+
+
+    # glTexCoord2f(0, 0); glVertex2f(-1, -1)
+    # glTexCoord2f(1, 0); glVertex2f(1, -1)
+    # glTexCoord2f(1, 1); glVertex2f(1, 1)
+    # glTexCoord2f(0, 1); glVertex2f(-1, 1)
+    # glEnd()
 
     pygame.display.flip()
     pygame.time.wait(10)
-
-
-
-
-
-# while True:
-#     for event in pygame.event.get():
-#         if event.type == pygame.QUIT:
-#             pygame.quit()
-#             quit()
-
-#     # Your rendering code here...
-
-#     pygame.display.flip()
-#     pygame.time.wait(10)
