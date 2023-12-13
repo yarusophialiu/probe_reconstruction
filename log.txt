@@ -53,3 +53,28 @@ if (!traceProject(L1, ray, hitDistance, hitProbeTexCoord, probeIndex)) {
         gl_FragColor = textureLod(L1.radianceProbeGrid, vec3(hitProbeTexCoord.x, 1.0 - hitProbeTexCoord.y, probeIndex), 0);
     }
 
+
+
+
+TraceResult traceOneRaySegment
+   (in LightFieldSurface lightFieldSurface,
+    in Ray      probeSpaceRay,
+    in float    t0,
+    in float    t1,
+    in ProbeIndex probeIndex,
+    inout float tMin, // out only
+    inout float tMax,
+    inout vec2  hitProbeTexCoord) {
+
+    Vector2 texCoordDelta        = endTexCoord - startTexCoord;
+    float texCoordDistance       = length(texCoordDelta);
+    Vector2 texCoordDirection    = texCoordDelta * (1.0 / texCoordDistance);
+
+    float texCoordStep = lightFieldSurface.distanceProbeGrid.invSize.x * (texCoordDistance / maxComponent(abs(texCoordDelta)));
+
+    Vector3 directionFromProbeBefore = octDecode(startTexCoord * 2.0 - 1.0);
+    float distanceFromProbeToRayBefore = max(0.0, distanceToIntersection(probeSpaceRay, directionFromProbeBefore));
+
+    return HIT_MISS;
+
+}

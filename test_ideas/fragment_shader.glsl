@@ -69,32 +69,6 @@ vec2 oct_vec_to_uv(vec2 oct) {
     return oct.xy * 0.5 + 0.5;
 }
 
-void computeRaySegments
-   (in Point3           origin,
-    in Vector3          directionFrac,
-    in float            tMin,
-    in float            tMax,
-    out float           boundaryTs[5]) {
-
-    boundaryTs[0] = tMin;
-
-    // Time values for intersection with x = 0, y = 0, and z = 0 planes, sorted
-    // in increasing order
-    Vector3 t = origin * -directionFrac;
-//    sort(t);
-
-    // Copy the values into the interval boundaries.
-    // This loop expands at compile time and eliminates the
-    // relative indexing, so it is just three conditional move operations
-    for (int i = 0; i < 3; ++i) {
-        boundaryTs[i + 1] = clamp(t[i], tMin, tMax);
-    }
-
-    boundaryTs[4] = tMax;
-}
-
-
-
 TraceResult traceOneProbeOct(in LightFieldSurface L, in ProbeIndex index, in Ray worldSpaceRay, inout float t0, inout float t1, inout vec2 hitProbeTexCoord, inout vec3 output_log) {
     // How short of a ray segment is not worth tracing?
     const float degenreateEpsilon = 0.001; // meters
@@ -120,33 +94,7 @@ TraceResult traceOneProbeOct(in LightFieldSurface L, in ProbeIndex index, in Ray
         return TRACE_RESULT_HIT;
     }
 
-//    // Maximum of 5 boundary points when projecting ray onto octahedral map;
-//    // ray origin, ray end, intersection with each of the XYZ planes.
-//    float boundaryTs[5];
-//    computeRaySegments(probeSpaceRay.origin, Vector3(1.0) / probeSpaceRay.direction, tMin, tMax, boundaryTs);
-//
-//    // for each open interval (t[i], t[i + 1]) that is not degenerate
-//    for (int i = 0; i < 4; ++i) {
-//        if (abs(boundaryTs[i] - boundaryTs[i + 1]) >= degenerateEpsilon) {
-//            TraceResult result = traceOneRaySegment(lightFieldSurface, probeSpaceRay, boundaryTs[i], boundaryTs[i + 1], index, tMin, tMax, hitProbeTexCoord);
-//
-//            switch (result) {
-//            case TRACE_RESULT_HIT:
-//                // Hit!
-//                return TRACE_RESULT_HIT;
-//
-//            case TRACE_RESULT_UNKNOWN:
-//                // Failed to find anything conclusive
-//                return TRACE_RESULT_UNKNOWN;
-//            } // switch
-//        } // if
-//    } // For each segment
-
     return TRACE_RESULT_MISS;
-
-
-
-
 
 }
 
@@ -197,24 +145,24 @@ void main() {
 
 //    traceProject(L1, ray, hitDistance, hitProbeTexCoord, probeIndex, output_log);
 
-
-    // fragColor.xyz = output_log;
-    if (!traceProject(L1, ray, hitDistance, hitProbeTexCoord, probeIndex, output_log)) {
-        // Missed the entire scene; assign black
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    } else {
-        // Sample the light probe radiance texture
-        // gl_FragColor = textureLod(L1.radianceProbeGrid, vec3(hitProbeTexCoord.x, hitProbeTexCoord.y, probeIndex), 0);
-        gl_FragColor = textureLod(L1.radianceProbeGrid, vec3(hitProbeTexCoord.x, 1.0 - hitProbeTexCoord.y, probeIndex), 0);
-        // gl_FragColor.xy = hitProbeTexCoord;
-    }
+//
+//    // fragColor.xyz = output_log;
+//    if (!traceProject(L1, ray, hitDistance, hitProbeTexCoord, probeIndex, output_log)) {
+//        // Missed the entire scene; assign black
+//        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+//    } else {
+//        // Sample the light probe radiance texture
+//        // gl_FragColor = textureLod(L1.radianceProbeGrid, vec3(hitProbeTexCoord.x, hitProbeTexCoord.y, probeIndex), 0);
+//        gl_FragColor = textureLod(L1.radianceProbeGrid, vec3(hitProbeTexCoord.x, 1.0 - hitProbeTexCoord.y, probeIndex), 0);
+//        // gl_FragColor.xy = hitProbeTexCoord;
+//    }
 
     
     
     // Example: Sample the radianceProbeGrid texture
     // vec3(uv, 0.0): layer 0.0
-    // vec4 radianceColor = texture(L1.radianceProbeGrid, vec3(gl_FragCoord.x / iResolution[0], 1.0 - (gl_FragCoord.y / iResolution[1]), 0.0));
-    // fragColor = radianceColor;
+     vec4 radianceColor = texture(L1.radianceProbeGrid, vec3(gl_FragCoord.x / iResolution[0], 1.0 - (gl_FragCoord.y / iResolution[1]), 0.0));
+     fragColor = radianceColor;
 
     // fragColor.xyz = ray.direction / 2 + vec3(0.5);
 

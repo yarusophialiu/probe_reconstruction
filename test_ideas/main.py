@@ -187,8 +187,10 @@ hrc = create_opengl_context(display)
 
 
 # Load shader source code from files
-vertex_shader_source = read_shader_file('vertex_shader.glsl')
+# vertex_shader_source = read_shader_file('vertex_shader.glsl')
 fragment_shader_source = read_shader_file('fragment_shader.glsl')
+vertex_shader_source = read_shader_file('../vertex_shader.glsl')
+
 
 # Compile vertex and fragment shaders
 vertex_shader = compile_shader(vertex_shader_source, GL_VERTEX_SHADER)
@@ -215,7 +217,7 @@ glUniform2f(resolution_uniform, display[0], display[1]) # set width and height
 
 
 # Load textures
-IMAGE_FOLDER = "probe_data"
+IMAGE_FOLDER = "../probe_data"
 image_paths = [f'{IMAGE_FOLDER}/probe1.png', f'{IMAGE_FOLDER}/probe2.png']
 num_images = len(image_paths)
 

@@ -5,10 +5,6 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from PIL import Image
-# import glfw
-
-# quadVAO = 0  # Vertex Array Object ID
-# quadVBO = 0  # Vertex Buffer Object ID
 
 def init_quad():
     global quadVAO, quadVBO
@@ -46,25 +42,16 @@ def init_quad():
 def render_quad():
     # global quadVBO
     global quadVAO
-    
 
     # Bind the VBO
     # glBindBuffer(GL_ARRAY_BUFFER, quadVBO)
     glBindVertexArray(quadVAO)
 
-    # # Enable and specify the vertex attribute pointers
-    # glEnableClientState(GL_VERTEX_ARRAY)
-    # glVertexPointer(3, GL_FLOAT, 0, None)
-
     # Draw the quad
     glDrawArrays(GL_QUADS, 0, 4)
 
     # Cleanup
-    # glDisableClientState(GL_VERTEX_ARRAY)
-    # glBindBuffer(GL_ARRAY_BUFFER, 0)
     glBindVertexArray(0)
-
-
 
 def read_shader_file(filename):
     with open(filename, 'r') as file:
@@ -109,8 +96,6 @@ def get_params(cam, width, height):
     a, b = -w_c/2, h_c/2
     dx, dy = w_c/width, h_c/height
 
-    # print(f"h_c {h_c}\n")
-    # print(f"width, height {width, height}\n")
     return camera_to_world, dx, dy, a, b
 
 
@@ -156,13 +141,10 @@ def load_texture(image_path):
 
     # Upload texture data to the texture array
     glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE, image_data)
-    # Add another layer if you have a second image
-    # glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 1, width, height, 1, GL_RGB, GL_UNSIGNED_BYTE, second_image_data)
 
     # Set texture parameters
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-
 
     return texture_id
 
@@ -170,7 +152,6 @@ def load_texture(image_path):
 # Initialize Pygame and OpenGL
 pygame.init()
 width, height = 1024, 1024
-# width, height = 2048, 2048
 display = (width, height)
 
 pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
@@ -196,8 +177,6 @@ at = np.array([atX, atY, atZ])
 # Set up uniforms (you should set these based on your specific camera setup)
 camera_position_uniform = glGetUniformLocation(shader_program, "cameraPosition")
 look_at_uniform = glGetUniformLocation(shader_program, "lookAt")
-# glUniform3f(camera_position_uniform, 0.0, 0.0, 5.0) # world space
-# glUniform3f(look_at_uniform, 0.0, 0.0, -1.0) # world space
 glUniform3f(camera_position_uniform, camX, camY, camZ) # world space
 glUniform3f(look_at_uniform, atX, atY, atZ) # world space
 
@@ -265,31 +244,11 @@ while True:
             quit()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    
-    # Draw quad with texture
-    # glBegin(GL_QUADS)
 
     global quadVBO
 
-    # Initialize GLFW and create a window...
-
-    # Initialize GLEW...
-
-    # Initialize the quad
-
-
-    # Clear the screen...
-
     # Render the quad
     render_quad()
-    # Cleanup code...
-
-
-    # glTexCoord2f(0, 0); glVertex2f(-1, -1)
-    # glTexCoord2f(1, 0); glVertex2f(1, -1)
-    # glTexCoord2f(1, 1); glVertex2f(1, 1)
-    # glTexCoord2f(0, 1); glVertex2f(-1, 1)
-    # glEnd()
 
     pygame.display.flip()
     pygame.time.wait(10)
